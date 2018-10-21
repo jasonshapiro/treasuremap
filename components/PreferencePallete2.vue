@@ -1,12 +1,11 @@
 <template lang='pug'>
   div(class='flex flex-row flex-wrap items-center justify-center mt-4')
-    div(class='preferences w-1/5 p-2 m-1 group' v-for='preference in availablePreferences' :key='preference.id')
-      input(class='checkbox' v-model='chosenPreferences' v-on:change="changePreferences"
-            type='checkbox' :id='"prefIcon" + preference.id' :value='preference.id')
-      label(class='clickIcon hover:text-blue-light' :for='"prefIcon" + preference.id') 
-        v-icon(:name='preference.icon ')
-        p(class='text-xs font-sans text-grey-darkest pointer-events-none select-none') {{ preference.name }}
-    p {{ chosenPreferences }}
+    div(class='preferences w-1/5 p-2 m-1 group hover:text-blue-light' v-for='preference in availablePreferences' :key='preference.id')
+      input(class='group-hover:text-blue-light pointer-events-none' v-model="chosenPreferences"
+            type='checkbox' :id='preference.id' :value='preference.id')
+      v-icon(:name='preference.icon')
+      p(class='text-xs font-sans text-grey-darkest pointer-events-none') {{ preference.name }}
+    span {{ chosenPreferences }}
 
 </template>
 
@@ -18,11 +17,15 @@ import 'vue-awesome/icons'
 export default {
   name: 'preference-pallete',
   components: {'v-icon': Icon},
-  props: ['chosenPreferences'],
-
+  props: {
+    availablePreferences: {
+      type: Array,
+      default: [],
+    },
+  },
   data() {
     return {
-      availablePreferences: [
+      chosenPreferences: [
       { id: 0, name: 'Appliances', icon: 'blender'},
       { id: 1, name: 'Luggage', icon: 'briefcase'},
       { id: 2, name: 'Cafe', icon: 'coffee'},
@@ -50,15 +53,11 @@ export default {
     }
   },
   methods: {
-    togglePreference: function(e, prefName) {
+    togglePreference(e, prefName) {
       e.target.classList.toggle('active')
+      e.target.
       console.log(e.target.name)
-    },
-    changePreferences: function(e, newList) {
-      window.eventBus.$emit('change-pref', this.chosenPreferences)
-      console.log(this.chosenPreferences)
     }
-
   }
 }
 </script>
@@ -70,20 +69,8 @@ export default {
   width: 40px;
 }
 
-.preferences {
+.preferences :checked {
   color: #3490dc;
-}
-
-input[type="checkbox"] {
-  display: none;
-}
-
-.clickIcon {
-  color: #eeeeee;
-}
-
-:checked + .clickIcon {
-   color: #3490dc;
 }
 
 </style>

@@ -14,18 +14,19 @@
 
   <div class="couponWrap w-1/3">
     <h1> Coupons </h1>
-    <couponList/>
+    <couponList v-bind:filtered-coupons='filteredCoupons'/>
   </div>
 
   <div class="prefWrap w-1/3">
     <h1> Preferences </h1>
-    <preference-pallete chosen-preferences='{}'/>
+    <preference-pallete v-bind:chosen-preferences='prefList'/>
   </div>
 
 </div>
 </template>
 
 <script>
+import Vue from 'vue'
 import Logo from '~/components/Logo.vue'
 import MallMap from '~/components/MallMap.vue'
 import PreferencePallete from '~/components/PreferencePallete.vue'
@@ -33,7 +34,9 @@ import {gmapApi} from 'vue2-google-maps'
 import axios from 'axios'
 import CouponList from '~/components/CouponList.vue'
 import offerData from 'static/offerData.js'
-//import shopperAPI from 'shopper-api'
+import prefs from 'static/availablePreferences.js'
+import serverAPI from 'static/ClientAPI.js'
+
 
 export default {
   components: {
@@ -43,19 +46,76 @@ export default {
     PreferencePallete
 //    Coupon
   },
+
   data: function() {
     return {
-      image: '/shoppingbagMapIcon.png' 
+      prefList: prefs.data.map(function(data) { return data.id }).filter(function(data) { return Math.round(Math.random()*0.6)}),
+      filteredCoupons: [],
+      coupons: [{
+            imgSrc: 'westfield.jpg',
+            progress: 0,
+            progressGoal: 100,
+            rewardLogo: 'https://qph.fs.quoracdn.net/main-qimg-18d801a88c5d4fefd289642da0d074d9',
+            couponText: 'Earn 25$ off after spending $100 at Westfield',
+            rewardsText: '25$ off',
+            categories: [0,4,8,9],      
+          },{
+            imgSrc: 'https://qph.fs.quoracdn.net/main-qimg-18d801a88c5d4fefd289642da0d074d9',
+            progress: 0,
+            progressGoal: 100,
+            rewardLogo: 'https://qph.fs.quoracdn.net/main-qimg-18d801a88c5d4fefd289642da0d074d9',
+            couponText: 'Walk 10000 steps and get a free Nike Fitbit',
+            rewardsText: 'Redeem your Fitbit',
+            categories: [5,9],
+          }]
     }
   },
-//  asyncData: function() {
-//    return axios.get('apiENDPOINT').then(function(res){
-//      return { markerData: res.schema.markerData } // TODO: create actual schema 
-//    })
+
+  asyncdata: function() {
+    return {
+      coupons: function() {
+        return this.api.getRelevantCoupons(this.api.token)
+      },
+    }
+  },
+
+  beforeCreate:()=>{
+    this.api = new serverAPI('localhost', 8080)
+    this.token = this.api.loginShopper('riyad','a@b.c')
+  },
+
+  methods: {
+    changePref: function(newList) {
+      this.prefList = newList
+      this.filteredCoupons = this.coupons.filter((coupon) => {
+            for (let category of coupon.categories) {
+              if (this.prefList.indexOf(parseInt(category, 10)) > -1) {
+                console.log(category + 'is a match!')
+                return true
+              }
+            }
+            console.log(coupon)
+            return false
+          })
+    }
+  },
+
+//  watch: {
+//    prefList: function(newList, oldList) {
+//      this.changePref(newList)
+//    }
 //  },
 
-
   mounted: function() {
+
+    var vm = this
+
+    window.eventBus = new Vue()
+
+    window.eventBus.$on('change-pref', (newList) => {
+      vm.changePref(newList)
+    })
+
     this.$refs.mapRef.$mapPromise.then((map) => {
 
       var opt = { minZoom: 17, maxZoom: 20, disableDefaultUI: true }

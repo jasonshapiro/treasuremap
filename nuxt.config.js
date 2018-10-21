@@ -35,8 +35,7 @@ module.exports = {
   */
   plugins: [
     '~/plugins/vue-google-maps',
-    '~/plugins/vue-awesome',
-    '~/plugins/shopper-api'
+  //  '~/plugins/vue-awesome'
   ],
 
   /*
