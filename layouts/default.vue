@@ -1,10 +1,7 @@
 <template>
   <div>
     <nav>
-      <nuxt-link to="/1">io</nuxt-link>
-      <nuxt-link to="/2">oi</nuxt-link>
-      <nuxt-link to="/3">io</nuxt-link>
-      <nuxt-link to="/4">oi</nuxt-link>
+
     </nav>
 
     <nuxt/>

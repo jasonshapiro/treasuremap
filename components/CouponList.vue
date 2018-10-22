@@ -1,8 +1,9 @@
 <template lang="pug">
 
-ul(class='couponInterface border-2 list-reset' ref='couponList')
-	li(v-for='coupon in filteredCoupons' :key='coupon.categories' class='couponItem w-full')
-		coupon-item(v-bind:coupon-data="coupon")
+transition(name='collapse')
+	ul(class='couponInterface border-2 list-reset' ref='couponList')
+		li(v-for='coupon in filteredCoupons' :key='coupon.categories' class='couponItem w-full')
+			coupon-item(v-bind:coupon-data="coupon")
 
 
 </template>
@@ -54,4 +55,14 @@ export default {
 
 
 <style>
+
+.collapse-enter-active {
+	transition: all 0.3s ease-in-out;
+	height: 100%;
+}
+
+.collapse-leave-active {
+	transition: all 0.2s ease-in-out;
+	height: 0;
+}
 </style>

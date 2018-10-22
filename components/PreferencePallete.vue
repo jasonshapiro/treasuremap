@@ -6,7 +6,6 @@
       label(class='clickIcon hover:text-blue-light' :for='"prefIcon" + preference.id') 
         v-icon(:name='preference.icon ')
         p(class='text-xs font-sans text-grey-darkest pointer-events-none select-none') {{ preference.name }}
-    p {{ chosenPreferences }}
 
 </template>
 
@@ -37,7 +36,7 @@ export default {
       { id: 11, name: 'Antiques', icon: 'hourglass'},
       { id: 12, name: 'Consumables', icon: 'lightbulb'},
       { id: 13, name: 'Magic', icon: 'magic'},
-      { id: 14, name: 'Savings', icon: 'money-bill'},
+      { id: 14, name: 'Cashback', icon: 'money-bill'},
       { id: 15, name: 'Pets', icon: 'paw'},
       { id: 16, name: 'Travel', icon: 'plane'},
       { id: 17, name: 'Charging Stations', icon: 'plug'},
@@ -50,10 +49,7 @@ export default {
     }
   },
   methods: {
-    togglePreference: function(e, prefName) {
-      e.target.classList.toggle('active')
-      console.log(e.target.name)
-    },
+
     changePreferences: function(e, newList) {
       window.eventBus.$emit('change-pref', this.chosenPreferences)
       console.log(this.chosenPreferences)
